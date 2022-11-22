@@ -60,13 +60,13 @@ class Eva:
         # Variable declaration
         if (exp[0] == 'var'):
             _, name, value = exp
-            return self.env.define(name, self.eval(value))
+            return self.env.define(name, self.eval(value, env))
 
         #---------------------------
         # Variable assignment
         if (exp[0] == 'set'):
             _, name, value = exp
-            return self.env.assign(name, value)
+            return self.env.assign(name, self.eval(value, env))
 
         #---------------------------
         # If expression
@@ -78,20 +78,25 @@ class Eva:
                 return self.eval(alternative, env)
 
         #---------------------------
+        # While expression
+        if (exp[0] == 'while'):
+            [_tag, condition, body] = exp
+            while (self.eval(condition, env)):
+                result = self.eval(body, env)
+
+            return result
+
+        #---------------------------
         # Variable access
         if (self._isVariableName(exp) or self._isVariableName(exp[0])):
-            print(f'We think this is a variable: {exp}')
             if type(exp) == list:
                 return self.env.lookup(exp[0])
             else:
                 return self.env.lookup(exp)
 
-
-
         raise TypeError(f'This type of expression is not yet implemented: {exp}')
 
     def _evalBlock(self, block, env):
-        print("Evaluating a block")
         [_tag, *expressions] = block
 
         results = [self.eval(exp, env) for exp in expressions]
