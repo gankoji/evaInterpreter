@@ -16,7 +16,7 @@ class Eva:
             return exp
 
         if self._isString(exp):
-            return exp
+            return exp[1:-1]
 
         #----------------------------
         # Math operations
@@ -61,7 +61,7 @@ class Eva:
         return (type(exp) == int) or (type(exp) == float)
 
     def _isString(self, exp):
-        return type(exp) == str
+        return (type(exp) == str) and (exp[0] == '"') and (exp[-1] == '"')
 
     def _isVariableName(self, exp):
         return (type(exp) == str) and (re.search(r"^[+\-*/<>=a-zA-Z0-9_]+$", exp))

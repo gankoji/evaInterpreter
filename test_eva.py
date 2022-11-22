@@ -9,7 +9,7 @@ def test_number():
     assert eva.eval(2) == 2
 
 def test_string():
-    assert eva.eval("HALLO") == 'HALLO'
+    assert eva.eval('"HALLO"') == 'HALLO'
 
 def test_var():
     assert eva.eval(['var', 'hi', 1]) == 1
@@ -29,10 +29,11 @@ def test_div():
 def test_varAccess():
     eva.eval(['var', 'x', 10])
     assert eva.eval(['x']) == 10
+
 def test_block():
     assert eva.eval(
         ['begin',
             ['var', 'x', 10],
             ['var', 'y', 20],
-            ['+', ['*', ['x'], ['y']], 30], # This is different from Dmitry's. My interpreter, atm, cannot distinguish between a string and  var access
+            ['+', ['*', 'x', 'y'], 30],
         ]) == 230
