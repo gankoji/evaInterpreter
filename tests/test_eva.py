@@ -1,9 +1,7 @@
 from ..eva.eva import *
+from . import testUtils
 
 eva = Eva()
-
-def test_eva():
-    assert True
 
 def test_number():
     assert eva.eval(2) == 2
@@ -79,3 +77,11 @@ def test_while():
             'result'
         ]
     )
+
+def test_testUtils():
+    testUtils.test(eva, """
+        (begin
+            (var x 10)
+            (var y 20)
+            (+ (* x 10) y))
+    """, 120)
