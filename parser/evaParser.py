@@ -54,21 +54,25 @@ def _handler4(_1):
 
 def _handler5(_1):
     global __, __loc, yytext, yyleng
-    __ = _1
+    __ = float(_1) 
 
 def _handler6(_1):
     global __, __loc, yytext, yyleng
     __ = _1
 
-def _handler7(_1,_2,_3):
+def _handler7(_1):
+    global __, __loc, yytext, yyleng
+    __ = _1
+
+def _handler8(_1,_2,_3):
     global __, __loc, yytext, yyleng
     __ = _2 
 
-def _handler8(_1,_2):
+def _handler9(_1,_2):
     global __, __loc, yytext, yyleng
     _1.append(_2); __ = _1 
 
-def _handler9():
+def _handler10():
     global __, __loc, yytext, yyleng
     __ = [] 
 
@@ -78,11 +82,12 @@ productions = [[-1,1,_handler1],
 [1,1,_handler4],
 [1,1,_handler5],
 [1,1,_handler6],
-[2,3,_handler7],
-[3,2,_handler8],
-[3,0,_handler9]]
-tokens = {"NUMBER":"4","STRING":"5","SYMBOL":"6","'('":"7","')'":"8","$":"9"}
-table = [{"0":1,"1":2,"2":3,"4":"s4","5":"s5","6":"s6","7":"s7"},{"9":"acc"},{"4":"r1","5":"r1","6":"r1","7":"r1","8":"r1","9":"r1"},{"4":"r2","5":"r2","6":"r2","7":"r2","8":"r2","9":"r2"},{"4":"r3","5":"r3","6":"r3","7":"r3","8":"r3","9":"r3"},{"4":"r4","5":"r4","6":"r4","7":"r4","8":"r4","9":"r4"},{"4":"r5","5":"r5","6":"r5","7":"r5","8":"r5","9":"r5"},{"3":8,"4":"r8","5":"r8","6":"r8","7":"r8","8":"r8"},{"0":10,"1":2,"2":3,"4":"s4","5":"s5","6":"s6","7":"s7","8":"s9"},{"4":"r6","5":"r6","6":"r6","7":"r6","8":"r6","9":"r6"},{"4":"r7","5":"r7","6":"r7","7":"r7","8":"r7"}]
+[1,1,_handler7],
+[2,3,_handler8],
+[3,2,_handler9],
+[3,0,_handler10]]
+tokens = {"INT":"4","FLOAT":"5","STRING":"6","SYMBOL":"7","'('":"8","')'":"9","$":"10"}
+table = [{"0":1,"1":2,"2":3,"4":"s4","5":"s5","6":"s6","7":"s7","8":"s8"},{"10":"acc"},{"4":"r1","5":"r1","6":"r1","7":"r1","8":"r1","9":"r1","10":"r1"},{"4":"r2","5":"r2","6":"r2","7":"r2","8":"r2","9":"r2","10":"r2"},{"4":"r3","5":"r3","6":"r3","7":"r3","8":"r3","9":"r3","10":"r3"},{"4":"r4","5":"r4","6":"r4","7":"r4","8":"r4","9":"r4","10":"r4"},{"4":"r5","5":"r5","6":"r5","7":"r5","8":"r5","9":"r5","10":"r5"},{"4":"r6","5":"r6","6":"r6","7":"r6","8":"r6","9":"r6","10":"r6"},{"3":9,"4":"r9","5":"r9","6":"r9","7":"r9","8":"r9","9":"r9"},{"0":11,"1":2,"2":3,"4":"s4","5":"s5","6":"s6","7":"s7","8":"s8","9":"s10"},{"4":"r7","5":"r7","6":"r7","7":"r7","8":"r7","9":"r7","10":"r7"},{"4":"r8","5":"r8","6":"r8","7":"r8","8":"r8","9":"r8"}]
 
 stack = None
 
@@ -106,7 +111,7 @@ def _lex_rule2(self):
 
 def _lex_rule3(self):
     global __, __loc, yytext, yyleng
-    #/*skip whitespace*/
+    return
 
 def _lex_rule4(self):
     global __, __loc, yytext, yyleng
@@ -114,20 +119,25 @@ def _lex_rule4(self):
 
 def _lex_rule5(self):
     global __, __loc, yytext, yyleng
-    return 'NUMBER'
+    return 'FLOAT'
 
 def _lex_rule6(self):
     global __, __loc, yytext, yyleng
+    return 'INT'
+
+def _lex_rule7(self):
+    global __, __loc, yytext, yyleng
     return 'SYMBOL'
 
-_lex_rules = [['^\\(', _lex_rule1],
-['^\\)', _lex_rule2],
-['^\\s+', _lex_rule3],
-['^"[^\\"]*"', _lex_rule4],
-['^\\d+', _lex_rule5],
-['^[\\w\\-+*=<>/]+', _lex_rule6]]
+_lex_rules = [[r'^\(', _lex_rule1],
+[r'^\)', _lex_rule2],
+[r'^\s+', _lex_rule3],
+[r'^"[^\"]*"', _lex_rule4],
+[r'^\d+\.\d+', _lex_rule5],
+[r'^\d+', _lex_rule6],
+[r'^[\w\-+*=<>/]+', _lex_rule7]]
 
-_lex_rules_by_conditions = {"INITIAL":[0,1,2,3,4,5]}
+_lex_rules_by_conditions = {"INITIAL":[0,1,2,3,4,5,6]}
 
 EOF_TOKEN = {
   'type': EOF,

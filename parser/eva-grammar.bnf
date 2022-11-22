@@ -5,14 +5,11 @@
  *
  * List: (), (+ 5 x), (print "hello")
  *
- */
-
-/*
  *
  * Some notes: 
  * Syntax is JS centric. While generating a .py file does
  * indeed give you a valid python program, it doesn't translate
- * everything perfectly/automatically. /*skip whitespace*/ below
+ * everything perfectly/automatically. "skip whitespace" below
  * is supposed to be a comment. It puts that string into the file
  * directly, which is not a valid Python comment. 
  * Additionally, it does not properly escape the regexes or treat
@@ -29,11 +26,13 @@
 
 %%
 
-\s+ 		/*skip whitespace*/
+\s+ 		return
 
 \"[^\"]*\"	return 'STRING'
 
-\d+		return 'NUMBER'
+\d+\.\d+	return 'FLOAT'
+
+\d+		return 'INT'
 
 [\w\-+*=<>/]+ 	return 'SYMBOL'
 /lex
@@ -50,7 +49,8 @@ Exp
 	;
 
 Atom
-	: NUMBER { $$ = Number($1) }
+	: INT { $$ = int($1) }
+	| FLOAT { $$ = float($1) }
 	| STRING
 	| SYMBOL
 	;
@@ -60,7 +60,7 @@ List
 	;
 
 ListEntries
-	: ListEntries Exp { $1.push($2); $$ = $1 }
+	: ListEntries Exp { $1.append($2); $$ = $1 }
 	| /* empty */ { $$ = [] }
 	;
 
