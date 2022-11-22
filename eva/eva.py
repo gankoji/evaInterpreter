@@ -36,19 +36,19 @@ class Eva:
         #----------------------------
         # Comparison operators
         if (exp[0] == '>'):
-            return this.eval(exp[1], env) > this.eval(exp[2], env)
+            return self.eval(exp[1], env) > self.eval(exp[2], env)
 
         if (exp[0] == '>='):
-            return this.eval(exp[1], env) >= this.eval(exp[2], env)
+            return self.eval(exp[1], env) >= self.eval(exp[2], env)
 
         if (exp[0] == '<'):
-            return this.eval(exp[1], env) < this.eval(exp[2], env)
+            return self.eval(exp[1], env) < self.eval(exp[2], env)
 
         if (exp[0] == '<='):
-            return this.eval(exp[1], env) <= this.eval(exp[2], env)
+            return self.eval(exp[1], env) <= self.eval(exp[2], env)
 
         if (exp[0] == '='):
-            return this.eval(exp[1], env) == this.eval(exp[2], env)
+            return self.eval(exp[1], env) == self.eval(exp[2], env)
 
         #----------------------------
         # Blocks  
@@ -69,6 +69,15 @@ class Eva:
             return self.env.assign(name, value)
 
         #---------------------------
+        # If expression
+        if (exp[0] == 'if'):
+            [_tag, condition, consequent, alternative] = exp
+            if (self.eval(condition, env)):
+                return self.eval(consequent, env)
+            else:
+                return self.eval(alternative, env)
+
+        #---------------------------
         # Variable access
         if (self._isVariableName(exp) or self._isVariableName(exp[0])):
             print(f'We think this is a variable: {exp}')
@@ -76,6 +85,8 @@ class Eva:
                 return self.env.lookup(exp[0])
             else:
                 return self.env.lookup(exp)
+
+
 
         raise TypeError(f'This type of expression is not yet implemented: {exp}')
 
