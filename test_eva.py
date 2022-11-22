@@ -37,3 +37,15 @@ def test_block():
             ['var', 'y', 20],
             ['+', ['*', 'x', 'y'], 30],
         ]) == 230
+
+def test_assignment():
+    print("Do prints work at all?")
+    assert eva.eval(
+        ['begin',
+            ['var', 'data', 10],
+            ['begin',
+                ['set', 'data', 100]
+            ],
+            'data'
+        ]
+    ) == 100

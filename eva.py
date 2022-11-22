@@ -16,6 +16,7 @@ class Eva:
             return exp
 
         if self._isString(exp):
+            print("We think this is a string")
             return exp[1:-1]
 
         #----------------------------
@@ -45,13 +46,24 @@ class Eva:
             return self.env.define(name, self.eval(value))
 
         #---------------------------
+        # Variable assignment
+        if (exp[0] == 'set'):
+            _, name, value = exp
+            return self.env.assign(name, value)
+
+        #---------------------------
         # Variable access
-        if (self._isVariableName(exp[0])):
-            return self.env.lookup(exp[0])
+        if (self._isVariableName(exp) or self._isVariableName(exp[0])):
+            print(f'We think this is a variable: {exp}')
+            if type(exp) == list:
+                return self.env.lookup(exp[0])
+            else:
+                return self.env.lookup(exp)
 
         raise TypeError(f'This type of expression is not yet implemented: {exp}')
 
     def _evalBlock(self, block, env):
+        print("Evaluating a block")
         [_tag, *expressions] = block
 
         results = [self.eval(exp, env) for exp in expressions]
@@ -65,3 +77,15 @@ class Eva:
 
     def _isVariableName(self, exp):
         return (type(exp) == str) and (re.search(r"^[+\-*/<>=a-zA-Z0-9_]+$", exp))
+
+if __name__ == "__main__":
+    eva = Eva()
+    eva.eval(
+        ['begin',
+            ['var', 'data', 10],
+            ['begin',
+                ['set', 'data', 100]
+            ],
+            'data'
+        ]
+    )
