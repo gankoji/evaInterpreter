@@ -4,29 +4,40 @@ from . import testUtils
 eva = Eva()
 
 def test_number():
-    assert eva.eval(2) == 2
+    testUtils.test(eva,"2", 2)
 
 def test_string():
-    assert eva.eval('"HALLO"') == 'HALLO'
-
-def test_var():
-    assert eva.eval(['var', 'hi', 1]) == 1
+    testUtils.test(eva, '"HALLO"', 'HALLO')
 
 def test_add():
-    assert eva.eval(['+', 1, ['+', 1, 2]]) == 4
+    testUtils.test(eva,
+    """
+        (+ 1 (+ 1 2))
+    """, 4)
 
 def test_sub():
-    assert eva.eval(['-', ['+', 1, 2], 1]) == 2
+    testUtils.test(eva,
+    """
+        (- (+ 1 2) 1)
+    """, 2)
 
 def test_mult():
-    assert eva.eval(['*', 2, 3]) == 6
+    testUtils.test(eva, "(* 2 3)", 6)
 
 def test_div():
-    assert eva.eval(['/', 6, 2]) == 3
+    testUtils.test(eva, "(/ 6 2)", 3)
+
+def test_var():
+    testUtils.test(eva, "(var 'hi' 1)", 1)
 
 def test_varAccess():
-    eva.eval(['var', 'x', 10])
-    assert eva.eval(['x']) == 10
+    testUtils.test(eva,
+    """
+        (begin (var 'x' 10)
+        ('x'))
+    """, 10)
+    #eva.eval(['var', 'x', 10])
+    #assert eva.eval(['x']) == 10
 
 def test_block():
     assert eva.eval(

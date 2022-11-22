@@ -135,7 +135,7 @@ _lex_rules = [[r'^\(', _lex_rule1],
 [r'^"[^\"]*"', _lex_rule4],
 [r'^\d+\.\d+', _lex_rule5],
 [r'^\d+', _lex_rule6],
-[r'^[\w\-+*=<>/]+', _lex_rule7]]
+[r'^[\w\-+*=<>/\']+', _lex_rule7]]
 
 _lex_rules_by_conditions = {"INITIAL":[0,1,2,3,4,5,6]}
 

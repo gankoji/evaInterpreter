@@ -34,7 +34,7 @@
 
 \d+		return 'INT'
 
-[\w\-+*=<>/]+ 	return 'SYMBOL'
+[\w\-+*=<>/\']+ 	return 'SYMBOL'
 /lex
 
 
