@@ -7,14 +7,14 @@ class Environment:
         self.record[name] = value
         return value
 
-    def assign(name, value):
+    def assign(self, name, value):
         self.resolve(name).record[name] = value
         return value
 
-    def lookup(name):
+    def lookup(self, name):
         return self.resolve(name).record[name]
 
-    def resolve(name):
+    def resolve(self, name):
         if (name in self.record.keys()):
             return self
 
