@@ -1,6 +1,6 @@
 import re
 
-from environment import *
+from .environment import *
 
 class Eva:
     def __init__(self, globalEnv = Environment()): 

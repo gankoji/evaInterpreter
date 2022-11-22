@@ -1,4 +1,4 @@
-from eva import *
+from ..eva.eva import *
 
 eva = Eva()
 
@@ -39,7 +39,6 @@ def test_block():
         ]) == 230
 
 def test_assignment():
-    print("Do prints work at all?")
     assert eva.eval(
         ['begin',
             ['var', 'data', 10],
