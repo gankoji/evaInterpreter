@@ -34,6 +34,23 @@ class Eva:
             return self.eval(exp[1], env) / self.eval(exp[2], env)
 
         #----------------------------
+        # Comparison operators
+        if (exp[0] == '>'):
+            return this.eval(exp[1], env) > this.eval(exp[2], env)
+
+        if (exp[0] == '>='):
+            return this.eval(exp[1], env) >= this.eval(exp[2], env)
+
+        if (exp[0] == '<'):
+            return this.eval(exp[1], env) < this.eval(exp[2], env)
+
+        if (exp[0] == '<='):
+            return this.eval(exp[1], env) <= this.eval(exp[2], env)
+
+        if (exp[0] == '='):
+            return this.eval(exp[1], env) == this.eval(exp[2], env)
+
+        #----------------------------
         # Blocks  
         if (exp[0] == 'begin'):
             blockEnv = Environment({}, self.env)
