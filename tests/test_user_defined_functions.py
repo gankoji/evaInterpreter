@@ -12,3 +12,15 @@ def test_udfs():
             (square 2)
         )
     """,4)
+
+    testUtils.test(eva,
+    """
+        (begin
+            (def calc (x y)
+                (begin
+                    (var z 30)
+                    (+ (* x y) z)
+                ))
+            (calc 10 20)
+        )
+    """, 230)
