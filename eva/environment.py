@@ -3,6 +3,13 @@ class Environment:
         self.record = record
         self.parent = parent
 
+    def print(self):
+        print(f"Here's an environment. Local level: {self.record}")
+        parent = self.parent
+        while parent:
+            print(parent.record)
+            parent = parent.parent
+
     def define(self, name, value):
         self.record[name] = value
         return value
@@ -16,8 +23,10 @@ class Environment:
 
     def resolve(self, name):
         if (name in self.record.keys()):
+            print(f"Found {name} at this level: {self.record}")
             return self
 
+        print(f"Failed to find {name} at this level: {self.record}. Going to parent")
         if self.parent == None:
             raise NameError(f'Sorry, cant find {name} in the environment')
 

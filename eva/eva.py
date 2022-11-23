@@ -1,6 +1,7 @@
 import re
 
 from .environment import *
+
 GlobalEnvironment = Environment({
     'null': None,
     'true': True,
@@ -23,8 +24,8 @@ class Eva:
         self.env = globalEnv
 
     def eval(self, exp, env = None):
-        if env == None:
-            env = self.env
+        if env != None:
+            self.env = env
 
         #----------------------------
         # Self-evaluating expressions
@@ -73,11 +74,18 @@ class Eva:
 
         #---------------------------
         # Variable access
-        if (self._isVariableName(exp)):# or self._isVariableName(exp[0])):
-            if type(exp) == list:
-                return self.env.lookup(exp[0])
-            else:
-                return self.env.lookup(exp)
+        if (self._isVariableName(exp)):
+            print(f"{exp} is a variable name.")
+            return self.env.lookup(exp)
+
+        #---------------------------
+        # Function declaration: (def square (x) (* x x))
+        if (exp[0] == 'def'):
+            [_tag, name, params, body] = exp
+
+            fn = [params, body, env]
+
+            return self.env.define(name, fn)
 
         #---------------------------
         # Function calls:
@@ -90,13 +98,32 @@ class Eva:
                 return fn(*args)
 
             # TODO: User-defined function
+            activationRecord = {}
+
+            for i,x in enumerate(fn[0]):
+                activationRecord[x] = args[i]
+            
+            activationEnv = Environment(activationRecord, fn[2])
+
+            return self._evalBody(fn[1], activationEnv)
 
         raise TypeError(f'This type of expression is not yet implemented: {exp}, type {type(exp)}')
 
+    def _evalBody(self, body, env):
+        print(f"Here's the env we got for this body: {env.record}")
+        if (body[0] == 'begin'):
+            print("Calling body like a block")
+            return self._evalBlock(body, env)
+        return self.eval(body, env)
+
     def _evalBlock(self, block, env):
+        # Decompose the block to get a list of its contents
         [_tag, *expressions] = block
 
+        # Evaluate the list of block contents
         results = [self.eval(exp, env) for exp in expressions]
+
+        # Return the result of the last expression
         return results[-1]
 
     def _isNumber(self, exp):
