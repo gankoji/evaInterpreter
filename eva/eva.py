@@ -1,9 +1,20 @@
 import re
 
 from .environment import *
+GlobalEnvironment = Environment({
+    'null': None,
+    'true': True,
+    'false': False,
+    'VERSION': '0.1',
+    '+': lambda op1, op2 : op1+op2,
+    '-': lambda op1, op2 = None : op1-op2 if op2 else -op1,
+    '*': lambda op1, op2 : op1*op2,
+    '/': lambda op1, op2 : op1/op2,
+
+})
 
 class Eva:
-    def __init__(self, globalEnv = Environment()): 
+    def __init__(self, globalEnv = GlobalEnvironment): 
         self.env = globalEnv
 
     def eval(self, exp, env = None):
@@ -21,17 +32,17 @@ class Eva:
 
         #----------------------------
         # Math operations
-        if (exp[0] == '+'):
-            return self.eval(exp[1], env) + self.eval(exp[2], env)
+        # if (exp[0] == '+'):
+        #     return self.eval(exp[1], env) + self.eval(exp[2], env)
 
-        if (exp[0] == '-'):
-            return self.eval(exp[1], env) - self.eval(exp[2], env)
+        # if (exp[0] == '-'):
+        #     return self.eval(exp[1], env) - self.eval(exp[2], env)
 
-        if (exp[0] == '*'):
-            return self.eval(exp[1], env) * self.eval(exp[2], env)
+        # if (exp[0] == '*'):
+        #     return self.eval(exp[1], env) * self.eval(exp[2], env)
 
-        if (exp[0] == '/'):
-            return self.eval(exp[1], env) / self.eval(exp[2], env)
+        # if (exp[0] == '/'):
+        #     return self.eval(exp[1], env) / self.eval(exp[2], env)
 
         #----------------------------
         # Comparison operators
@@ -88,13 +99,23 @@ class Eva:
 
         #---------------------------
         # Variable access
-        if (self._isVariableName(exp) or self._isVariableName(exp[0])):
+        if (self._isVariableName(exp)):# or self._isVariableName(exp[0])):
             if type(exp) == list:
                 return self.env.lookup(exp[0])
             else:
                 return self.env.lookup(exp)
 
-        raise TypeError(f'This type of expression is not yet implemented: {exp}')
+        #---------------------------
+        # Function calls:
+        if (isinstance(exp, list)):
+            fn = self.eval(exp[0], env)
+            args = [self.eval(arg, env) for arg in exp[1:]]
+
+            # Native functions
+            if (callable(fn)):
+                return fn(*args)
+
+        raise TypeError(f'This type of expression is not yet implemented: {exp}, type {type(exp)}, {isinstance(exp, list)}')
 
     def _evalBlock(self, block, env):
         [_tag, *expressions] = block

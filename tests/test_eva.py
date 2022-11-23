@@ -3,30 +3,6 @@ from . import testUtils
 
 eva = Eva()
 
-def test_number():
-    testUtils.test(eva,"2", 2)
-
-def test_string():
-    testUtils.test(eva, '"HALLO"', 'HALLO')
-
-def test_add():
-    testUtils.test(eva,
-    """
-        (+ 1 (+ 1 2))
-    """, 4)
-
-def test_sub():
-    testUtils.test(eva,
-    """
-        (- (+ 1 2) 1)
-    """, 2)
-
-def test_mult():
-    testUtils.test(eva, "(* 2 3)", 6)
-
-def test_div():
-    testUtils.test(eva, "(/ 6 2)", 3)
-
 def test_var():
     testUtils.test(eva, "(var 'hi' 1)", 1)
 
