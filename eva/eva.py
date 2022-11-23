@@ -10,7 +10,12 @@ GlobalEnvironment = Environment({
     '-': lambda op1, op2 = None : op1-op2 if op2 else -op1,
     '*': lambda op1, op2 : op1*op2,
     '/': lambda op1, op2 : op1/op2,
-
+    '>': lambda op1, op2 : op1 > op2,
+    '>=': lambda op1, op2 : op1 >= op2,
+    '<': lambda op1, op2 : op1 < op2,
+    '<=': lambda op1, op2 : op1 <= op2,
+    '=': lambda op1, op2 : op1 == op2,
+    'print': lambda *args : print(args)
 })
 
 class Eva:
@@ -29,37 +34,6 @@ class Eva:
         if self._isString(exp):
             print("We think this is a string")
             return exp[1:-1]
-
-        #----------------------------
-        # Math operations
-        # if (exp[0] == '+'):
-        #     return self.eval(exp[1], env) + self.eval(exp[2], env)
-
-        # if (exp[0] == '-'):
-        #     return self.eval(exp[1], env) - self.eval(exp[2], env)
-
-        # if (exp[0] == '*'):
-        #     return self.eval(exp[1], env) * self.eval(exp[2], env)
-
-        # if (exp[0] == '/'):
-        #     return self.eval(exp[1], env) / self.eval(exp[2], env)
-
-        #----------------------------
-        # Comparison operators
-        if (exp[0] == '>'):
-            return self.eval(exp[1], env) > self.eval(exp[2], env)
-
-        if (exp[0] == '>='):
-            return self.eval(exp[1], env) >= self.eval(exp[2], env)
-
-        if (exp[0] == '<'):
-            return self.eval(exp[1], env) < self.eval(exp[2], env)
-
-        if (exp[0] == '<='):
-            return self.eval(exp[1], env) <= self.eval(exp[2], env)
-
-        if (exp[0] == '='):
-            return self.eval(exp[1], env) == self.eval(exp[2], env)
 
         #----------------------------
         # Blocks  
@@ -115,7 +89,9 @@ class Eva:
             if (callable(fn)):
                 return fn(*args)
 
-        raise TypeError(f'This type of expression is not yet implemented: {exp}, type {type(exp)}, {isinstance(exp, list)}')
+            # TODO: User-defined function
+
+        raise TypeError(f'This type of expression is not yet implemented: {exp}, type {type(exp)}')
 
     def _evalBlock(self, block, env):
         [_tag, *expressions] = block

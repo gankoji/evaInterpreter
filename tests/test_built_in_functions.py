@@ -36,3 +36,6 @@ def test_logical():
     testUtils.test(eva, "(> 1 5)", False)
     testUtils.test(eva, "(>= 1 5)", False)
     testUtils.test(eva, "(= 1 5)", False)
+
+def test_printing():
+    testUtils.test(eva, '(print "HAI")', None)
