@@ -110,9 +110,7 @@ class Eva:
         raise TypeError(f'This type of expression is not yet implemented: {exp}, type {type(exp)}')
 
     def _evalBody(self, body, env):
-        print(f"Here's the env we got for this body: {env.record}")
         if (body[0] == 'begin'):
-            print("Calling body like a block")
             return self._evalBlock(body, env)
         return self.eval(body, env)
 

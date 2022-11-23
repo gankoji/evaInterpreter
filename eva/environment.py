@@ -23,10 +23,8 @@ class Environment:
 
     def resolve(self, name):
         if (name in self.record.keys()):
-            print(f"Found {name} at this level: {self.record}")
             return self
 
-        print(f"Failed to find {name} at this level: {self.record}. Going to parent")
         if self.parent == None:
             raise NameError(f'Sorry, cant find {name} in the environment')
 

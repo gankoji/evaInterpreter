@@ -24,3 +24,23 @@ def test_udfs():
             (calc 10 20)
         )
     """, 230)
+
+    testUtils.test(eva,
+    """
+        (begin
+
+            (var value 100)
+            (def calc (x y)
+                (begin
+                    (var z (+ x y))
+
+                    (def inner (foo)
+                        (+ (+ foo z) value))
+
+                    inner
+                ))
+            (var fn (calc 10 20))
+
+            (fn 30)
+        )
+    """, 160)
