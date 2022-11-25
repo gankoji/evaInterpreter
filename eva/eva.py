@@ -80,12 +80,20 @@ class Eva:
 
         #---------------------------
         # Function declaration: (def square (x) (* x x))
+        # Syntactic sugar for: (var square (lambda (x) (* x x)))
         if (exp[0] == 'def'):
             [_tag, name, params, body] = exp
 
-            fn = [params, body, env]
+            # JIT-transpile to a variable declaration
+            varExp = ['var', name, ['lambda', params, body]]
+            return self.eval(varExp, self.env)
 
-            return self.env.define(name, fn)
+        #---------------------------
+        # Lambda function: (lambda (x) (* x x))
+        if (exp[0] == 'lambda'):
+            [_tag, params, body] = exp
+
+            return [params, body, self.env]
 
         #---------------------------
         # Function calls:
