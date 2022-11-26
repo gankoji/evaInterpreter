@@ -1,6 +1,7 @@
 import re
 
 from .environment import *
+from ..transform.transformer import Transformer
 
 GlobalEnvironment = Environment({
     'null': None,
@@ -22,6 +23,7 @@ GlobalEnvironment = Environment({
 class Eva:
     def __init__(self, globalEnv = GlobalEnvironment): 
         self.env = globalEnv
+        self.xfrm = Transformer()
 
     def eval(self, exp, env = None):
         if env != None:
@@ -82,12 +84,17 @@ class Eva:
         # Function declaration: (def square (x) (* x x))
         # Syntactic sugar for: (var square (lambda (x) (* x x)))
         if (exp[0] == 'def'):
-            [_tag, name, params, body] = exp
-
             # JIT-transpile to a variable declaration
-            varExp = ['var', name, ['lambda', params, body]]
-            return self.eval(varExp, self.env)
+            newExp = self.xfrm.transformDeftoLambda(exp)
+            return self.eval(newExp, self.env)
 
+        #---------------------------
+        # Switch expression (switch (cond1, block1) ... )
+        # Syntactic sugar for nested if-expressions
+        if (exp[0] == 'switch'):
+            ifExp = self.xfrm.transformSwitchToIf(exp)
+            return self.eval(ifExp, self.env)
+            
         #---------------------------
         # Lambda function: (lambda (x) (* x x))
         if (exp[0] == 'lambda'):
