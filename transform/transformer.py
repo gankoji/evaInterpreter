@@ -43,3 +43,8 @@ class Transformer:
         [_tag, name] = exp
         setExp = ['set', name, ['+', name, 1]]
         return setExp
+
+    def transformDecToSet(self, exp):
+        [_tag, name] = exp
+        setExp = ['set', name, ['-', name, 1]]
+        return setExp

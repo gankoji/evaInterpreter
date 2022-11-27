@@ -25,6 +25,15 @@ def test_plusplus():
         )
     """, 11)
 
+def test_minusminus():
+    testUtils.test(eva,
+    """
+        (begin
+            (var x 10)
+            (-- x)
+        )
+    """, 9)
+
 def test_for():
     testUtils.test(eva,
     """

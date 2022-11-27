@@ -104,9 +104,15 @@ class Eva:
         #---------------------------
         # Increment (++ foo)
         # Equivalent to (set foo (+ foo 1))
-
         if (exp[0] == '++'):
             setExp = self.xfrm.transformIncToSet(exp)
+            return self.eval(setExp, self.env)
+
+        #---------------------------
+        # Decrement (-- foo)
+        # Equivalent to (set foo (- foo 1))
+        if (exp[0] == '--'):
+            setExp = self.xfrm.transformDecToSet(exp)
             return self.eval(setExp, self.env)
 
         #---------------------------
