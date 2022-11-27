@@ -77,7 +77,6 @@ class Eva:
         #---------------------------
         # Variable access
         if (self._isVariableName(exp)):
-            print(f"{exp} is a variable name.")
             return self.env.lookup(exp)
 
         #---------------------------
@@ -95,6 +94,21 @@ class Eva:
             ifExp = self.xfrm.transformSwitchToIf(exp)
             return self.eval(ifExp, self.env)
             
+        #---------------------------
+        # For loop (for init condition modifier body)
+        # Equivalent to (begin init (while condition (begin body modifier)))
+        if (exp[0] == 'for'):
+            whileExp = self.xfrm.transformForToWhile(exp)
+            return self.eval(whileExp, self.env)
+            
+        #---------------------------
+        # Increment (++ foo)
+        # Equivalent to (set foo (+ foo 1))
+
+        if (exp[0] == '++'):
+            setExp = self.xfrm.transformIncToSet(exp)
+            return self.eval(setExp, self.env)
+
         #---------------------------
         # Lambda function: (lambda (x) (* x x))
         if (exp[0] == 'lambda'):

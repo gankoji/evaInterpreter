@@ -15,3 +15,21 @@ def test_switch():
                     (else 300))
         )
     """, 100)
+    
+def test_plusplus():
+    testUtils.test(eva,
+    """
+        (begin
+            (var x 10)
+            (++ x)
+        )
+    """, 11)
+
+def test_for():
+    testUtils.test(eva,
+    """
+        (for (var x 0)
+            (< x 10)
+            (++ x)
+            x)
+    """, 10)

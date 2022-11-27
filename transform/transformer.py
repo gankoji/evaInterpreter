@@ -31,3 +31,15 @@ class Transformer:
             current = current[3]
 
         return ifExp
+
+    def transformForToWhile(self, exp):
+        # For loop (for init condition modifier body)
+        # Equivalent to (begin init (while condition (begin body modifier)))
+        [_tag, init, cond, mod, body] = exp
+
+        return ['begin', init, ['while', cond, ['begin', body, mod]]]
+
+    def transformIncToSet(self, exp):
+        [_tag, name] = exp
+        setExp = ['set', name, ['+', name, 1]]
+        return setExp
