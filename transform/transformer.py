@@ -48,3 +48,13 @@ class Transformer:
         [_tag, name] = exp
         setExp = ['set', name, ['-', name, 1]]
         return setExp
+    
+    def transformIncSetToSet(self, exp):
+        [_tag, name, inc] = exp
+        setExp = ['set', name, ['+', name, inc]]
+        return setExp
+
+    def transformDecSetToSet(self, exp):
+        [_tag, name, inc] = exp
+        setExp = ['set', name, ['-', name, inc]]
+        return setExp

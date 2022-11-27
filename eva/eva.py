@@ -116,6 +116,20 @@ class Eva:
             return self.eval(setExp, self.env)
 
         #---------------------------
+        # Increment and set (+= foo)
+        # Equivalent to (set foo (+ foo inc))
+        if (exp[0] == '+='):
+            setExp = self.xfrm.transformIncSetToSet(exp)
+            return self.eval(setExp, self.env)
+
+        #---------------------------
+        # Decrement and set (-= foo)
+        # Equivalent to (set foo (- foo inc))
+        if (exp[0] == '-='):
+            setExp = self.xfrm.transformDecSetToSet(exp)
+            return self.eval(setExp, self.env)
+
+        #---------------------------
         # Lambda function: (lambda (x) (* x x))
         if (exp[0] == 'lambda'):
             [_tag, params, body] = exp

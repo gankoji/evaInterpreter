@@ -34,6 +34,26 @@ def test_minusminus():
         )
     """, 9)
 
+def test_plusequals():
+    testUtils.test(eva,
+    """
+        (begin
+            (var x 10)
+            (var y 5)
+            (+= x y)
+        )
+    """, 15)
+
+def test_minusequals():
+    testUtils.test(eva,
+    """
+        (begin
+            (var x 10)
+            (var y 5)
+            (-= x y)
+        )
+    """, 5)
+
 def test_for():
     testUtils.test(eva,
     """
