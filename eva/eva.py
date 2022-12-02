@@ -25,6 +25,12 @@ class Eva:
         self.env = globalEnv
         self.xfrm = Transformer()
 
+    def evalGlobal(self, expressions):
+        return self._evalBlock(
+            ['block', expressions],
+            self.env
+        )
+
     def eval(self, exp, env = None):
         if env != None:
             self.env = env
