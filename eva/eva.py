@@ -38,6 +38,13 @@ class Eva:
             print("We think this is a string")
             return exp[1:-1]
 
+        if (exp[0] == 'printenv'):
+            print(f"self.env")
+            self.env.print()
+            print(f"env")
+            env.print()
+            return
+            
         #----------------------------
         # Blocks  
         if (exp[0] == 'begin'):
@@ -53,8 +60,17 @@ class Eva:
         #---------------------------
         # Variable assignment
         if (exp[0] == 'set'):
-            _, name, value = exp
-            return self.env.assign(name, self.eval(value, env))
+            _, ref, value = exp
+            
+            # Assignment to a property
+            if (ref[0] == 'prop'):
+                _, instance, propName = ref
+                instanceEnv = self.eval(instance, env)
+
+                return instanceEnv.define(propName, self.eval(value, env))
+
+            # Simple assignment
+            return self.env.assign(ref, self.eval(value, env))
 
         #---------------------------
         # If expression
@@ -137,8 +153,51 @@ class Eva:
             return [params, body, self.env]
 
         #---------------------------
+        # Class declaration: (class <Name> <Parent> <Body>)
+        if (exp[0] == 'class'):
+            # Important fact here: a class is just an environment!
+            # So, we build that here.
+            [_tag, name, parent, body] = exp
+
+            if parent != 'null':
+                print(f"Inheriting an env: {parent} in class def")
+                parentEnv = self.eval(parent, self.env)
+            else:
+                print("Not inheriting in class def")
+                parentEnv = self.env
+
+            classEnv = Environment({}, parentEnv)
+            self._evalBody(body, classEnv)
+
+            retVal = env.define(name, classEnv)
+            print(f'Defining class {name} in classEnv. Its now {env.lookup(name)} in the parent env')
+            return retVal
+
+        #---------------------------
+        # Class instantiation: (new <Class> <Arguments> ...)
+        if (exp[0] == 'new'):
+            # An instance of a class is just a particular copy
+            # of that class' environment.
+            classEnv = self.eval(exp[1], env)
+            instanceEnv = Environment({}, classEnv)
+            
+            args = [self.eval(arg, env) for arg in exp[2:]]
+            self._callUserDefinedFunction(classEnv.lookup('constructor'), [instanceEnv, *args])
+
+            return instanceEnv
+        
+        #---------------------------
+        # Property access: (prop <instance> <name>)
+        if (exp[0] == 'prop'):
+            [_tag, instance, name] = exp
+            instanceEnv = self.eval(instance, env)
+            return instanceEnv.lookup(name)
+
+        #---------------------------
         # Function calls:
         if (isinstance(exp, list)):
+            print(f"We have a function call: {exp}")
+            self.env.print()
             fn = self.eval(exp[0], env)
             args = [self.eval(arg, env) for arg in exp[1:]]
 
@@ -146,17 +205,20 @@ class Eva:
             if (callable(fn)):
                 return fn(*args)
 
-            # TODO: User-defined function
-            activationRecord = {}
-
-            for i,x in enumerate(fn[0]):
-                activationRecord[x] = args[i]
-            
-            activationEnv = Environment(activationRecord, fn[2])
-
-            return self._evalBody(fn[1], activationEnv)
+            # User-defined function
+            return self._callUserDefinedFunction(fn, args)
 
         raise TypeError(f'This type of expression is not yet implemented: {exp}, type {type(exp)}')
+
+    def _callUserDefinedFunction(self, fn, args):
+        activationRecord = {}
+
+        for i,x in enumerate(fn[0]):
+            activationRecord[x] = args[i]
+        
+        activationEnv = Environment(activationRecord, fn[2])
+
+        return self._evalBody(fn[1], activationEnv)
 
     def _evalBody(self, body, env):
         if (body[0] == 'begin'):

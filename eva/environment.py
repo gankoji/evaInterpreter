@@ -7,6 +7,7 @@ class Environment:
         print(f"Here's an environment. Local level: {self.record}")
         parent = self.parent
         while parent:
+            print(f"Going up another level")
             print(parent.record)
             parent = parent.parent
 
