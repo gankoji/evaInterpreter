@@ -37,9 +37,7 @@ class Eva:
         )
 
     def eval(self, exp, env = None):
-        print(f"\nEvaluating expression {exp} with env")
         if env != None:
-            env.print()
             self.env = env
 
         #----------------------------
@@ -186,7 +184,6 @@ class Eva:
         #---------------------------
         # Super expression: (super <ClassName>)
         if (exp[0] == 'super'):
-            print(f'\n\nLooking for {exp[1]} in env:')
             env.print()
             [_tag, className] = exp
             return self.eval(className, env).parent
