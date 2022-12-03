@@ -4,12 +4,12 @@ class Environment:
         self.parent = parent
 
     def print(self):
-        print(f"Here's an environment. Local level: {self.record}")
-        parent = self.parent
-        while parent:
-            print(f"Going up another level")
-            print(parent.record)
-            parent = parent.parent
+        print(f"{self.record}, {id(self.record)}, {id(self.parent)}")
+        #print(f"Here's an environment. Local level: {self.record}")
+        #parent = self.parent
+        #while parent:
+        #    print(parent.record)
+        #    parent = parent.parent
 
     def define(self, name, value):
         self.record[name] = value

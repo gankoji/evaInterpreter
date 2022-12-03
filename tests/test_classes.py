@@ -16,7 +16,5 @@ def test_classdec():
                     (+ (prop this x) (prop this y)))))
 
         (var p (new Point 10 20))
-        (print "Hello")
-        (printenv)
         ((prop p calc) p)
     """, 30)

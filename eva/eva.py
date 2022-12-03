@@ -32,7 +32,9 @@ class Eva:
         )
 
     def eval(self, exp, env = None):
+        print(f"\nEvaluating expression {exp} with env")
         if env != None:
+            env.print()
             self.env = env
 
         #----------------------------
@@ -166,18 +168,23 @@ class Eva:
             [_tag, name, parent, body] = exp
 
             if parent != 'null':
-                print(f"Inheriting an env: {parent} in class def")
-                parentEnv = self.eval(parent, self.env)
+                parentEnv = self.eval(parent, env)
             else:
-                print("Not inheriting in class def")
-                parentEnv = self.env
+                parentEnv = env
 
             classEnv = Environment({}, parentEnv)
             self._evalBody(body, classEnv)
 
             retVal = env.define(name, classEnv)
-            print(f'Defining class {name} in classEnv. Its now {env.lookup(name)} in the parent env')
-            return retVal
+            return retVal 
+
+        #---------------------------
+        # Super expression: (super <ClassName>)
+        if (exp[0] == 'super'):
+            print(f'\n\nLooking for {exp[1]} in env:')
+            env.print()
+            [_tag, className] = exp
+            return self.eval(className, env).parent
 
         #---------------------------
         # Class instantiation: (new <Class> <Arguments> ...)
@@ -185,6 +192,7 @@ class Eva:
             # An instance of a class is just a particular copy
             # of that class' environment.
             classEnv = self.eval(exp[1], env)
+            classEnv.define(exp[1], classEnv)
             instanceEnv = Environment({}, classEnv)
             
             args = [self.eval(arg, env) for arg in exp[2:]]
@@ -200,10 +208,17 @@ class Eva:
             return instanceEnv.lookup(name)
 
         #---------------------------
+        # Module declaration: (module <body>)
+        if exp[0] == 'module':
+            _tag, name, body = exp
+
+            moduleEnv = Environment({}, env)
+            self._evalBody(body, moduleEnv)
+            return env.define(name, moduleEnv)
+
+        #---------------------------
         # Function calls:
         if (isinstance(exp, list)):
-            print(f"We have a function call: {exp}")
-            self.env.print()
             fn = self.eval(exp[0], env)
             args = [self.eval(arg, env) for arg in exp[1:]]
 
@@ -219,12 +234,13 @@ class Eva:
     def _callUserDefinedFunction(self, fn, args):
         activationRecord = {}
 
-        for i,x in enumerate(fn[0]):
+        paramList, body, fnEnv = fn
+        for i,x in enumerate(paramList):
             activationRecord[x] = args[i]
         
-        activationEnv = Environment(activationRecord, fn[2])
+        activationEnv = Environment(activationRecord, fnEnv)
 
-        return self._evalBody(fn[1], activationEnv)
+        return self._evalBody(body, activationEnv)
 
     def _evalBody(self, body, env):
         if (body[0] == 'begin'):
@@ -236,7 +252,11 @@ class Eva:
         [_tag, *expressions] = block
 
         # Evaluate the list of block contents
-        results = [self.eval(exp, env) for exp in expressions]
+        # results = [self.eval(exp, env) for exp in expressions]
+        results = []
+        for exp in expressions:
+            res = self.eval(exp, env)
+            results.append(res)
 
         # Return the result of the last expression
         return results[-1]
