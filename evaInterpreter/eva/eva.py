@@ -1,4 +1,8 @@
 import re
+import os
+
+dirname = os.path.dirname(__file__) 
+moduleDirName = os.path.join(dirname, "../modules")
 
 from .environment import *
 from ..transform.transformer import Transformer
@@ -222,7 +226,7 @@ class Eva:
         if exp[0] == 'import':
             _tag, name = exp
             
-            with open(f'./modules/{name}.eva', 'r') as file:
+            with open(f'{moduleDirName}/{name}.eva', 'r') as file:
                 moduleSrc = file.read()
                 body = parse(f'(begin {moduleSrc})')
                 moduleExp = ['module', name, body]
