@@ -2,6 +2,7 @@ import re
 
 from .environment import *
 from ..transform.transformer import Transformer
+from ..parser.evaParser import *
 
 GlobalEnvironment = Environment({
     'null': None,
@@ -216,6 +217,17 @@ class Eva:
             self._evalBody(body, moduleEnv)
             return env.define(name, moduleEnv)
 
+        #---------------------------
+        # Module import: (import <name>)
+        if exp[0] == 'import':
+            _tag, name = exp
+            
+            with open(f'./modules/{name}.eva', 'r') as file:
+                moduleSrc = file.read()
+                body = parse(f'(begin {moduleSrc})')
+                moduleExp = ['module', name, body]
+
+                return self.eval(moduleExp, self.env)
         #---------------------------
         # Function calls:
         if (isinstance(exp, list)):
